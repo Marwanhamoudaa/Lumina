@@ -3,6 +3,8 @@ import { useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { 
   Banknote, 
   CreditCard, 
@@ -21,8 +23,9 @@ import { creatCashOrder, creatVisaOrder } from "./orderAction";
 import { cartContext } from "@/context/CartContextProvider";
 
 export default function Payment() {
-  const { cartId, totalPrice } = useContext(cartContext) as any;
+  const { cartId, totalPrice, refreshCart } = useContext(cartContext) as any;
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const router = useRouter();
 
   const form = useForm<PaymentDataType>({
     defaultValues: { details: "", phone: "", city: "", postalCode: "", paymentMethod: "cash" },
@@ -40,11 +43,28 @@ export default function Payment() {
       },
     };
 
-    if (values.paymentMethod === "cash") {
-      await creatCashOrder(cartId, userData);
-    } else {
-      const res = await creatVisaOrder(cartId, userData);
-      if (res.status === "success") window.open(res.session.url);
+    try {
+      if (values.paymentMethod === "cash") {
+        const res = await creatCashOrder(cartId ?? "", userData);
+        if (res?.status === "success") {
+          await refreshCart?.();
+          toast.success("Cash order created successfully.");
+          router.push("/allorders");
+          return;
+        }
+        toast.error(res?.message || "Failed to create cash order.");
+        return;
+      }
+
+      const res = await creatVisaOrder(cartId ?? "", userData);
+      if (res?.status === "success" && res?.session?.url) {
+        window.location.href = res.session.url;
+        return;
+      }
+      toast.error(res?.message || "Failed to start online payment session.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Something went wrong while processing your payment.";
+      toast.error(message);
     }
   }
 

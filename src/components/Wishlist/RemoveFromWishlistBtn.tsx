@@ -1,10 +1,11 @@
 // components/Wishlist/RemoveFromWishlistBtn.tsx
 'use client';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { motion } from "framer-motion";
 import { Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { cartContext } from "@/context/CartContextProvider";
 
 interface RemoveFromWishlistBtnProps {
   productId: string;
@@ -14,11 +15,13 @@ interface RemoveFromWishlistBtnProps {
 export default function RemoveFromWishlistBtn({ productId, onRemove }: RemoveFromWishlistBtnProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { refreshWishlist } = useContext(cartContext) as any;
 
   async function handleRemove() {
     setIsLoading(true);
     try {
       await onRemove(productId);
+      await refreshWishlist?.();
       router.refresh();
       toast.success("Product removed from wishlist", {
         position: "top-center",

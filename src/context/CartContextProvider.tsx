@@ -21,11 +21,27 @@ export default function CartContextProvider({ children }: { children: ReactNode 
         const [numberOfWishList, setnumberOfWishList] = useState(0)
 
     async function getCart() {
-        const data = await getUserCart()        
-        setnumberOfCartItem(data.numOfCartItems)
-        setCartProducts(data.data.products)
-        settotalPrice(data.data.totalCartPrice)
-        setcartId(data.cartId)
+        try {
+            const data = await getUserCart()
+
+            if (data?.status !== "success" || !data?.data) {
+                setnumberOfCartItem(0)
+                setCartProducts([])
+                settotalPrice(0)
+                setcartId(undefined)
+                return
+            }
+
+            setnumberOfCartItem(data.numOfCartItems ?? 0)
+            setCartProducts(data.data.products ?? [])
+            settotalPrice(data.data.totalCartPrice ?? 0)
+            setcartId(data.cartId)
+        } catch {
+            setnumberOfCartItem(0)
+            setCartProducts([])
+            settotalPrice(0)
+            setcartId(undefined)
+        }
     }
     async function getWishlist() {
        const wishlistData = await getUserWishList()
@@ -40,7 +56,7 @@ export default function CartContextProvider({ children }: { children: ReactNode 
     
 
     return (
-        <cartContext.Provider value={{numberOfWishList,setnumberOfWishList, wishlistData , setWishlistData, numberOfCartItem,setCartProducts,setcartId, settotalPrice ,cartId,totalPrice, cartProducts, setnumberOfCartItem }}>
+        <cartContext.Provider value={{numberOfWishList,setnumberOfWishList, wishlistData , setWishlistData, numberOfCartItem,setCartProducts,setcartId, settotalPrice ,cartId,totalPrice, cartProducts, setnumberOfCartItem, refreshCart: getCart, refreshWishlist: getWishlist }}>
             {children}
         </cartContext.Provider>
     )
