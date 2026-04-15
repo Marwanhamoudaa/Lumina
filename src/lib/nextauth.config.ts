@@ -3,6 +3,8 @@ import Credentials from "next-auth/providers/credentials";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
+const API_BASE_URL = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://ecommerce.routemisr.com/api";
+
 export const nextAuthConfig: NextAuthOptions = {
     providers: [
         Credentials({
@@ -12,7 +14,7 @@ export const nextAuthConfig: NextAuthOptions = {
                 password: {}
             },
             async authorize(credentials) {
-                const res = await fetch(`${process.env.API_BASE_URL}/v1/auth/signin`, {
+                const res = await fetch(`${API_BASE_URL}/v1/auth/signin`, {
                     body: JSON.stringify(credentials),
                     method: "POST",
                     headers: {

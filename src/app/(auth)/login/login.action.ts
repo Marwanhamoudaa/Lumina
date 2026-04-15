@@ -3,8 +3,10 @@
 import { cookies } from 'next/headers';
 import { loginDataType } from './login.schema';
 
+const API_BASE_URL = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://ecommerce.routemisr.com/api";
+
 export async function loginReq(values: loginDataType) {
-    const res = await fetch(`${process.env.API_BASE_URL}/v1/auth/signin`, {
+    const res = await fetch(`${API_BASE_URL}/v1/auth/signin`, {
         body: JSON.stringify(values),
         method: "POST",
         headers: {

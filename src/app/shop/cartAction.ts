@@ -2,10 +2,12 @@
 import { CartResponse } from "@/interfaces/cart.type";
 import { getMyToken } from "@/utiles/getMyToken";
 import { headers } from "next/headers";
+
+const API_BASE_URL = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://ecommerce.routemisr.com/api";
 export async function addToCart(id: string): Promise<CartResponse> {
     console.log("helllllooooo");
     const myToken = await getMyToken()
-    const res = await fetch(`${process.env.API_BASE_URL}/v2/cart`, {
+    const res = await fetch(`${API_BASE_URL}/v2/cart`, {
         method: "POST",
         body: JSON.stringify({
 
@@ -25,7 +27,7 @@ export async function addToCart(id: string): Promise<CartResponse> {
 
 export async function getUserCart(): Promise<CartResponse> {
     const myToken = await getMyToken()
-    const res = await fetch(`${process.env.API_BASE_URL}/v2/cart`,
+    const res = await fetch(`${API_BASE_URL}/v2/cart`,
         {
             headers: {
                 token: myToken as string
@@ -40,7 +42,7 @@ export async function getUserCart(): Promise<CartResponse> {
 
 export async function deleteItemFromCart(productId: string): Promise<CartResponse> {
     const myToken = await getMyToken()
-    const res = await fetch(`${process.env.API_BASE_URL}/v2/cart/${productId}`,
+    const res = await fetch(`${API_BASE_URL}/v2/cart/${productId}`,
         {
             method: "DELETE",
             headers: {
@@ -57,7 +59,7 @@ export async function deleteItemFromCart(productId: string): Promise<CartRespons
 
 export async function updateProductCard(id: string , count : number): Promise<CartResponse> {
     const myToken = await getMyToken()
-    const res = await fetch(`${process.env.API_BASE_URL}/v2/cart/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/v2/cart/${id}`, {
         method: "PUT",
         body: JSON.stringify({count}),
         headers: {
@@ -71,7 +73,7 @@ export async function updateProductCard(id: string , count : number): Promise<Ca
 }
 export async function deleteUserCart(): Promise<CartResponse> {
     const myToken = await getMyToken()
-    const res = await fetch(`${process.env.API_BASE_URL}/v2/cart`,
+    const res = await fetch(`${API_BASE_URL}/v2/cart`,
         {
             method: "DELETE",
             headers: {

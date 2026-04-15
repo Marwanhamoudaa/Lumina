@@ -4,9 +4,11 @@ import { WishlistResponse } from "@/interfaces/Wishlist"
 import { getMyToken } from "@/utiles/getMyToken"
 import { revalidatePath } from "next/cache"
 
+const API_BASE_URL = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://ecommerce.routemisr.com/api";
+
 export async function getUserWishList(): Promise<WishlistResponse> {
     const myToken = await getMyToken()
-    const res = await fetch(`${process.env.API_BASE_URL}/v1/wishlist`,
+    const res = await fetch(`${API_BASE_URL}/v1/wishlist`,
         {
             headers: {
                 token: myToken as string
@@ -28,7 +30,7 @@ export async function setWishList(productId: string) {
 
     const myToken = await getMyToken();
 
-    const req = await fetch(`${process.env.API_BASE_URL}/v1/wishlist`, {
+    const req = await fetch(`${API_BASE_URL}/v1/wishlist`, {
         method: "POST", 
         headers: {
             "Content-Type": "application/json",
@@ -44,7 +46,7 @@ export async function setWishList(productId: string) {
 export async function removeFromWishList(productId: string) {
     const myToken = await getMyToken();
 
-    const req = await fetch(`${process.env.API_BASE_URL}/v1/wishlist/${productId}`, {
+    const req = await fetch(`${API_BASE_URL}/v1/wishlist/${productId}`, {
         method: "DELETE",
         headers: {
             token: myToken as string
