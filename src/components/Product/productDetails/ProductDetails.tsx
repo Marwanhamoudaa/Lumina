@@ -7,6 +7,7 @@ import { cartContext } from '@/context/CartContextProvider';
 import { removeFromWishList, setWishList } from '@/app/wishlist/wishListActions';
 import { useContext } from 'react';
 import { addToCart } from '@/app/shop/cartAction';
+import { useRouter } from 'next/navigation';
 import { 
   Heart, 
   Truck, 
@@ -40,6 +41,7 @@ interface Product {
 }
 
 export default function ProductDetails({ product }: { product: Product }) {
+    const router = useRouter();
     const { wishlistData, setWishlistData, setnumberOfWishList, setnumberOfCartItem, setCartProducts, settotalPrice, setcartId } = useContext(cartContext) as any;
 
 
@@ -55,7 +57,7 @@ export default function ProductDetails({ product }: { product: Product }) {
     const discountedPrice = Math.round(product.price * 0.8);
     const originalPrice = Math.round(product.price * 1.25);
     async function handleAddToCart() {
-        if (isAddingToCart) return;
+        if (isAddingToCart) return false;
         setIsAddingToCart(true);
 
         try {
@@ -68,6 +70,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                 setIsAddedToCart(true);
                 setTimeout(() => setIsAddedToCart(false), 1600);
             }
+            return res?.status === "success";
         } finally {
             setIsAddingToCart(false);
         }
@@ -380,6 +383,12 @@ export default function ProductDetails({ product }: { product: Product }) {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 className="flex-1 bg-linear-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-lg"
+                                onClick={async () => {
+                                    // Add item to cart (so payment has an active cart), then go to checkout.
+                                    if (product.quantity <= 0) return;
+                                    const ok = isAddedToCart ? true : await handleAddToCart();
+                                    if (ok) router.push("/payment");
+                                }}
                             >
                                 <Zap className="w-5 h-5" />
                                 Buy Now
