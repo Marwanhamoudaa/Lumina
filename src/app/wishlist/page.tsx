@@ -1,10 +1,11 @@
 import { getUserWishList, removeFromWishList } from './wishListActions';
 import { IProduct } from '@/interfaces/IProduct';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import Link from 'next/link';
 import WishlistHeader from '@/components/Wishlist/WishlistHeader ';
 import WishlistEmpty from '@/components/Wishlist/WishlistEmpty';
 import WishlistCard from '@/components/Wishlist/WishlistCard';
+import AddAllToCartBtn from '@/components/Wishlist/AddAllToCartBtn';
 
 export default async function WishlistPage() {
   const { data }: { data: IProduct[] } = await getUserWishList();
@@ -62,10 +63,7 @@ export default async function WishlistPage() {
                 </p>
               </div>
               
-              <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl text-sm font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md">
-                <ShoppingBag className="w-4 h-4" />
-                <span>Add All to Cart</span>
-              </button>
+              <AddAllToCartBtn products={data} />
             </div>
 
             {/* Wishlist Table */}

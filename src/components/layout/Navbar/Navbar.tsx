@@ -33,6 +33,9 @@ import {
     TrendingUp,
     Package,
     Truck
+    ,
+    Moon,
+    Sun
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { cartContext } from "@/context/CartContextProvider";
@@ -53,6 +56,8 @@ export default function Navbar() {
     const [searchFocused, setSearchFocused] = React.useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
     const [scrolled, setScrolled] = React.useState(false);
+    const [isDark, setIsDark] = React.useState(false);
+    const [themeReady, setThemeReady] = React.useState(false);
 
     function handleLogout() {
         signOut({ redirect: true, callbackUrl: "/login" });
@@ -68,6 +73,22 @@ export default function Navbar() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    useEffect(() => {
+        const savedTheme = window.localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const shouldUseDark = savedTheme ? savedTheme === "dark" : prefersDark;
+        document.documentElement.classList.toggle("dark", shouldUseDark);
+        setIsDark(shouldUseDark);
+        setThemeReady(true);
+    }, []);
+
+    function handleToggleTheme() {
+        const nextDark = !isDark;
+        document.documentElement.classList.toggle("dark", nextDark);
+        window.localStorage.setItem("theme", nextDark ? "dark" : "light");
+        setIsDark(nextDark);
+    }
 
     return (
         <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? "shadow-xl" : ""}`}>
@@ -162,6 +183,24 @@ export default function Navbar() {
                                     </div>
                                 </Link>
                             </Button> */}
+
+                            {/* Wishlist */}
+                            {themeReady && (
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={handleToggleTheme}
+                                    className="h-10 w-10 rounded-xl hover:bg-slate-100 transition-all"
+                                    aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                                    title={isDark ? "Light mode" : "Dark mode"}
+                                >
+                                    {isDark ? (
+                                        <Sun size={18} className="text-amber-500" />
+                                    ) : (
+                                        <Moon size={18} className="text-slate-600" />
+                                    )}
+                                </Button>
+                            )}
 
                             {/* Wishlist */}
                             <Button variant="ghost" size="icon" asChild className="relative h-10 w-10 rounded-xl hover:bg-slate-100 transition-all group">

@@ -128,3 +128,67 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  /* Global dark overrides for existing light utility usage across pages */
+  .dark .bg-white {
+    background-color: rgb(15 23 42) !important;
+  }
+
+  .dark .bg-slate-50 {
+    background-color: rgb(15 23 42) !important;
+  }
+
+  .dark .bg-slate-100 {
+    background-color: rgb(30 41 59) !important;
+  }
+
+  .dark .text-slate-900 {
+    color: rgb(248 250 252) !important;
+  }
+
+  .dark .text-slate-800 {
+    color: rgb(226 232 240) !important;
+  }
+
+  .dark .text-slate-700 {
+    color: rgb(203 213 225) !important;
+  }
+
+  .dark .text-slate-600,
+  .dark .text-slate-500,
+  .dark .text-slate-400 {
+    color: rgb(148 163 184) !important;
+  }
+
+  .dark .border-slate-100,
+  .dark .border-slate-200,
+  .dark .border-slate-300 {
+    border-color: rgb(51 65 85) !important;
+  }
+
+  .dark .hover\:bg-slate-50:hover,
+  .dark .hover\:bg-slate-100:hover {
+    background-color: rgb(30 41 59) !important;
+  }
+
+  .dark .hover\:text-slate-600:hover,
+  .dark .hover\:text-slate-700:hover {
+    color: rgb(226 232 240) !important;
+  }
+
+  .dark .from-slate-50,
+  .dark .from-white {
+    --tw-gradient-from: rgb(2 6 23) var(--tw-gradient-from-position) !important;
+  }
+
+  .dark .via-white,
+  .dark .via-slate-50 {
+    --tw-gradient-via: rgb(15 23 42) var(--tw-gradient-via-position) !important;
+  }
+
+  .dark .to-slate-50,
+  .dark .to-white {
+    --tw-gradient-to: rgb(2 6 23) var(--tw-gradient-to-position) !important;
+  }
+}
